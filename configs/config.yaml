@@ -1,0 +1,80 @@
+# Model configuration
+model:
+  name: "clip_contrastive"
+  vision_encoder:
+    type: "vit"
+    model_name: "openai/clip-vit-base-patch32"
+    freeze_backbone: false
+    projection_dim: 512
+  text_encoder:
+    type: "transformer"
+    model_name: "openai/clip-vit-base-patch32"
+    freeze_backbone: false
+    projection_dim: 512
+  temperature: 0.07
+  logit_scale_init_value: 2.6592
+
+# Data configuration
+data:
+  dataset_name: "toy_multimodal"
+  batch_size: 32
+  num_workers: 4
+  image_size: 224
+  max_text_length: 77
+  train_split: 0.8
+  val_split: 0.1
+  test_split: 0.1
+
+# Training configuration
+training:
+  epochs: 100
+  learning_rate: 1e-4
+  weight_decay: 0.01
+  warmup_steps: 1000
+  gradient_clip_norm: 1.0
+  mixed_precision: true
+  accumulation_steps: 1
+  save_every_n_epochs: 10
+  eval_every_n_epochs: 5
+
+# Loss configuration
+loss:
+  type: "infonce"
+  temperature: 0.07
+  label_smoothing: 0.0
+  hard_negative_mining: false
+  num_negatives: 0
+
+# Evaluation configuration
+evaluation:
+  metrics:
+    - "recall_at_1"
+    - "recall_at_5"
+    - "recall_at_10"
+    - "median_rank"
+    - "mean_rank"
+  save_predictions: true
+  save_embeddings: false
+
+# Device configuration
+device:
+  type: "auto"  # auto, cuda, mps, cpu
+  deterministic: true
+  benchmark: false
+
+# Logging configuration
+logging:
+  level: "INFO"
+  log_every_n_steps: 100
+  save_logs: true
+  use_wandb: false
+  use_tensorboard: true
+  project_name: "multimodal-ssl"
+
+# Paths
+paths:
+  data_dir: "data"
+  checkpoint_dir: "checkpoints"
+  log_dir: "logs"
+  output_dir: "outputs"
+  assets_dir: "assets"
